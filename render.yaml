@@ -1,0 +1,49 @@
+databases:
+  - name: epaylasim-db
+    plan: free
+    databaseName: epaylasim
+    user: epaylasim_user
+
+services:
+  - type: web
+    name: epaylasim-api
+    runtime: node
+    plan: free
+    buildCommand: npm run build:render
+    startCommand: npm run start:prod
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: epaylasim-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: FRONTEND_URL
+        value: https://epaylasim.com.tr
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        value: "E-Paylaşım <noreply@epaylasim.com>"
+      - key: ADMIN_EMAIL
+        value: izolemendil@gmail.com
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
